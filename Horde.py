@@ -41,7 +41,7 @@ def printHelp(*, extraArgs=[], **kwargs):
         except KeyError:
             print("Invalid Command "+arg)
         except Exception:
-            pass
+            print("No help available for "+arg)
     return {}
 
 def printList(*, battlefield=[], graveyard=[], command=[], **kwargs):
@@ -179,12 +179,12 @@ def moveCard(*, battlefield=[], library=[], command=None, hand=[], graveyard=[],
     Exile is treated as stopping existing
     """
     if len(extraArgs) < 2:
-        print("Too few arguments")
+        print("Too few arguments takes at least 2, an id and destination")
         return {}
     item = extraArgs[0]
     dest = extraArgs[1]
     if dest.lower()[0] not in ["g", "b", "c", "l", "h", "e"]:
-        print("Invalid destination")
+        print("Invalid destination, valid destinations are g, b, c, l, h, e")
         return {}
     res = {}
     if item.startswith("g"):
@@ -224,7 +224,7 @@ def addAnnotation(*, battlefield=[], extraArgs=[], **kwargs):
     Add an annotation to a given card on the battlefield specified by id
     """
     if len(extraArgs) < 2:
-        print("Not enough arguments")
+        print("Not enough arguments, takes 2, an id and an annotation")
         return {}
     item = extraArgs[0]
     index = int(item[1:])
@@ -246,7 +246,7 @@ def takeDamage(*, library=[], graveyard=[], extraArgs=[], infinite=False, **kwar
     Deal damage to the Horde, deals damage as milling cards
     """
     if len(extraArgs) < 1:
-        print("Invalid Argument")
+        print("Invalid Argument, takes an integer amount of damage")
         return {}
     n = int(extraArgs[0])
     for i in range(n):
@@ -263,7 +263,7 @@ def drawCards(*, library=[], hand=[], extraArgs=[], infinite=False, **kwargs):
     Let the Horde draw cards
     """
     if len(extraArgs) < 1:
-        print("Invalid Argument")
+        print("Invalid Argument takes an integer amount of cards")
         return {}
     n = int(extraArgs[0])
     for i in range(n):
@@ -281,7 +281,7 @@ def healLife(*, library=[], graveyard=[], extraArgs=[], infinite=False, **kwargs
     the library, NOTE: Doesn't shuffle you'll need to it yourself
     """
     if len(extraArgs) < 1:
-        print("Invalid Argument")
+        print("Invalid Argument, takes an integer amount of life to heal")
         return {}
     n = int(extraArgs[0])
     for i in range(n):
@@ -311,7 +311,7 @@ def addCard(*, battlefield=[], extraArgs=[], **kwargs):
     Add a given card name to the battlefield under the Horde's control
     """
     if(len(extraArgs) < 1):
-        print("Invalid Argument")
+        print("Invalid Argument, takes a card name")
         return {}
     battlefield.append((" ".join(extraArgs), ""))
     return {"battlefield":battlefield}
@@ -321,7 +321,7 @@ def discardCards(*, hand=[], graveyard=[], extraArgs=[], infinite=False, **kwarg
     Move cards from the Horde's hand into their graveyard
     """
     if len(extraArgs) < 1:
-        print("Invalid Argument")
+        print("Invalid Argument, takes an integer number of cards")
         return {}
     n = int(extraArgs[0])
     if n > len(hand):
@@ -339,13 +339,13 @@ def revealFromZone(*, extraArgs=[], **kwargs):
     g: graveyard, h: hand, l: library, b: battlefield
     """
     if len(extraArgs) < 2:
-        print("Invalid Argument")
+        print("Invalid Argument, takes a zone and an integer number of cards to reveal")
         return {}
     zones = {"g": "graveyard", "h": "hand", "l": "library", "b": "battlefield"}
     z = extraArgs[0]
     n = int(extraArgs[1])
     if z not in zones:
-        print("Invalid Zone")
+        print("Invalid Zone, valid zones are g, h, l, b")
         return {}
     if n > len(kwargs[zones[z]]):
         n = len(kwargs[zones[z]])
@@ -359,7 +359,7 @@ def randomGen(*, extraArgs=[], **kwargs):
     Randomly generate a number between and including the two arguments
     """
     if len(extraArgs) < 2:
-        print("Invalid Arguments")
+        print("Invalid Arguments takes two integers to generate between")
         return {}
     print(random.randint(int(extraArgs[0]), int(extraArgs[1])))
     return {}
@@ -377,7 +377,7 @@ def printAttacks(*, battlefield=[], extraArgs=[], **kwargs):
     between one and the argument to this. Allows easy computation of attacks
     """
     if len(extraArgs) < 1:
-        print("Invalid Arguments")
+        print("Invalid Arguments, takes an integer number of targets to choose from")
         return {}
     n = int(extraArgs[0])
     for i in battlefield:
@@ -403,7 +403,7 @@ def playHorde():
         try:
             env.update(commands[vals[0]](extraArgs=vals[1:], **env))
         except KeyError:
-            print("Invalid command")
+            print("Invalid command, maybe try running help")
         except IndexError as e:
             print("Horde out of cards")
             print(e)
