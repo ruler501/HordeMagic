@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import random
 import gnureadline
 import sys
@@ -79,7 +80,7 @@ def quitHorde(**kwargs):
 
 def calcXCost(turnNumber):
     d = 2*turnNumber+4
-    res = 1
+    res = 0
     choice = d-1
     while choice == d-1:
         choice = random.randint(0,d-1)
@@ -92,6 +93,28 @@ def printXMana(*, turnNumber=1, **kwargs):
     """
     print("Have "+str(calcXCost(turnNumber))+" Mana available")
     return {}
+
+def playHand(*, battlefield=[], graveyard=[], hand=[], 
+                 turnNumber=1, **kwargs):
+    """
+    Play all cards currently in hand out
+    """
+    for card in hand:
+        invalid = True
+        while invalid:
+            invalid = False
+            cType = input("Type of "+card+" p(ermanent), s(pell): ")
+            if cType.startswith('p'):
+                battlefield.append((card, ""))
+                print("Mana for X "+str(calcXCost(turnNumber)))
+            elif cType.startswith('s'):
+                graveyard.append(card)
+                print("Mana for X "+str(calcXCost(turnNumber)))
+            else:
+                print("Invalid choice")
+                invalid = True
+    return {"hand":[], "battlefield":battlefield,
+            "graveyard":graveyard}
 
 def hordeTurn(*, battlefield=[], graveyard=[], library=[], hand=[], 
                  command=None, turnNumber=1, infinite=False, **kwargs):
@@ -390,7 +413,7 @@ commands = {
             'm':moveCard, "a":addAnnotation, "d": takeDamage, "h":healLife,
             "dr":drawCards, "lb": printBattlefield, "tu": printTurnNumber,
             "ac":addCard, "di": discardCards, "rz": revealFromZone, "r": randomGen,
-            "s":shuffleLibrary, "at": printAttacks
+            "s":shuffleLibrary, "at": printAttacks, "ph": playHand
            }
 def playHorde():
     env = {
